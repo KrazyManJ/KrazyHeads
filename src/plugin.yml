@@ -1,0 +1,7 @@
+main: me.KrazyManJ.KrazyHeads.Main
+name: KrazyHeads
+author: KrazyManJ
+version: 1.0.0
+api-version: 1.17
+commands:
+  krazyheads:
