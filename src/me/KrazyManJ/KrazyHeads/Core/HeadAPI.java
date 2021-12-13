@@ -22,10 +22,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class HeadAPI {
-    private static Multimap<Category, ItemStack> data = MultimapBuilder.hashKeys().arrayListValues().build();
+    @SuppressWarnings("UnstableApiUsage")
+    private static final Multimap<Category, ItemStack> data = MultimapBuilder.hashKeys().arrayListValues().build();
 
     public static List<ItemStack> getCategoryHeads(Category cat){
         return (List<ItemStack>) data.get(cat);
@@ -34,7 +36,7 @@ public class HeadAPI {
         List<ItemStack> result = new ArrayList<>();
         for (Category cat : Category.values()){
             for (ItemStack item : data.get(cat)){
-                if (StringUtils.containsIgnoreCase(item.getItemMeta().getDisplayName(), input)) result.add(item);
+                if (StringUtils.containsIgnoreCase(Objects.requireNonNull(item.getItemMeta()).getDisplayName(), input)) result.add(item);
             }
         }
         return result;
@@ -85,6 +87,7 @@ public class HeadAPI {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack customPlayerHead(String value, String uuid) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         String[] splits = uuid.split("(?=-)", 4);
@@ -107,7 +110,7 @@ public class HeadAPI {
         MONSTERS("monsters"),
         PLANTS("plants");
 
-        private Category(String id) {
+        Category(String id) {
             this.id = id;
         }
         public String getId() {

@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.EnumUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class Main extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@Nonnull CommandSender sender,@Nonnull Command command,@Nonnull String label,@Nonnull String[] args) {
         if (sender instanceof Player player){
             if (args.length == 0){
                 new SelectorGUI(player);
@@ -50,7 +51,7 @@ public class Main extends JavaPlugin {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@Nonnull CommandSender sender,@Nonnull Command command,@Nonnull String alias, String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) suggestions = suggestByInput(args[0], Arrays.asList("search","category","reload"));
         else if (args.length == 2) {

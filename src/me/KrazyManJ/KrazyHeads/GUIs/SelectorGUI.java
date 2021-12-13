@@ -25,13 +25,12 @@ import java.util.List;
 
 public class SelectorGUI implements Listener {
     private Inventory inv;
-    private BukkitTask runnable;
+    private final BukkitTask runnable;
 
 
     public SelectorGUI(Player player){
         this.inv = Bukkit.createInventory(null, 45, "Selector");
         int[] slots = new int[]{11,12,13,14,15,20,21,22,23,24};
-        int slot = 0;
         runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -57,6 +56,7 @@ public class SelectorGUI implements Listener {
             if (item.getType().equals(Material.PLAYER_HEAD)){
                 ItemMeta meta = item.getItemMeta();
                 HandlerList.unregisterAll(this);
+                assert meta != null;
                 new BrowseGUI(player, HeadAPI.Category.valueOf(ChatColor.stripColor(meta.getDisplayName()).replace("-", "_").toUpperCase()));
             }
             event.setCancelled(true);
@@ -72,9 +72,11 @@ public class SelectorGUI implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private ItemStack statusItem(){
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
+        assert meta != null;
         meta.setOwningPlayer(Bukkit.getOfflinePlayer("KrazyManJ"));
         meta.setDisplayName(ItemUtils.colorize("         &e&lStatus:"));
         List<String> string = new ArrayList<>();

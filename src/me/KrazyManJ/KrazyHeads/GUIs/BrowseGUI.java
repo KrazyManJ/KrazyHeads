@@ -119,6 +119,7 @@ public class BrowseGUI implements Listener {
         List<String> string = new ArrayList<>();
         string.add(ItemUtils.colorize("&r         &7Page &e"+page+"/"+maxPage+"&r         "));
         string.add(ItemUtils.colorize("&r"));
+        assert meta != null;
         meta.setLore(string);
         item.setItemMeta(meta);
         return item;
