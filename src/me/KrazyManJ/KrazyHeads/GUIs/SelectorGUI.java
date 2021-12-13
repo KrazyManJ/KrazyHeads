@@ -16,8 +16,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SelectorGUI implements Listener {
     private Inventory inv;
@@ -38,6 +42,7 @@ public class SelectorGUI implements Listener {
                 }
             }
         }.runTaskTimerAsynchronously(Main.getInstance(), 0, 20);
+        inv.setItem(40, statusItem());
         for (int i = 0; i < 45; i++) if (inv.getItem(i) == null) inv.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
 
         player.openInventory(inv);
@@ -59,11 +64,26 @@ public class SelectorGUI implements Listener {
     }
 
     @EventHandler
-    public void onClose(InventoryCloseEvent event){
+    private void onClose(InventoryCloseEvent event){
         if (event.getInventory() == inv) {
             runnable.cancel();
             inv = null;
             HandlerList.unregisterAll(this);
         }
+    }
+
+    private ItemStack statusItem(){
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer("KrazyManJ"));
+        meta.setDisplayName(ItemUtils.colorize("         &e&lStatus:"));
+        List<String> string = new ArrayList<>();
+        string.add(ItemUtils.colorize("&r"));
+        string.add(ItemUtils.colorize("  &7Total heads: &e"+HeadAPI.getHeadsCount()+"&r &r "));
+        string.add(ItemUtils.colorize("  &7Total categories: &e"+HeadAPI.Category.values().length+"&r &r "));
+        string.add(ItemUtils.colorize("&r"));
+        meta.setLore(string);
+        item.setItemMeta(meta);
+        return item;
     }
 }

@@ -15,7 +15,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseGUI implements Listener {
@@ -63,6 +65,7 @@ public class BrowseGUI implements Listener {
         for (int i = 45; i < 54; i++) inv.setItem(i,new ItemStack(Material.AIR));
         inv.setItem(45, closeItem());
         if (this.page != 1) inv.setItem(47, previousPageItem());
+        inv.setItem(49, pageInfoItem());
         if (this.page != this.maxPage) inv.setItem(51, nextPageItem());
     }
 
@@ -108,6 +111,17 @@ public class BrowseGUI implements Listener {
 
     private ItemStack nextPageItem(){
         return ItemUtils.createItem(new ItemStack(Material.ARROW), "&7Next page");
+    }
+
+    private ItemStack pageInfoItem(){
+        ItemStack item = ItemUtils.createItem(new ItemStack(Material.STRUCTURE_VOID), ItemUtils.colorize("&r"));
+        ItemMeta meta = item.getItemMeta();
+        List<String> string = new ArrayList<>();
+        string.add(ItemUtils.colorize("&r         &7Page &e"+page+"/"+maxPage+"&r         "));
+        string.add(ItemUtils.colorize("&r"));
+        meta.setLore(string);
+        item.setItemMeta(meta);
+        return item;
     }
 
     private ItemStack previousPageItem(){

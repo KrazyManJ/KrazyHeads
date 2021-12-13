@@ -8,6 +8,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.EnumUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,32 +30,37 @@ public class Main extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0 && sender instanceof Player player) {
-            new SelectorGUI(player);
-            return false;
-        }
-        if (sender instanceof Player player) {
-            if (args[0].equals("search")){
+        if (sender instanceof Player player){
+            if (args.length == 0){
+                new SelectorGUI(player);
+            }
+            else if (args.length == 1 && args[0].equals("reload") && player.hasPermission("krazyheads.admin")){
+                HeadAPI.initializeHeads();
+                player.sendMessage("Heads successfully reloaded!");
+            }
+            else if (args.length == 2 && args[0].equals("category") && EnumUtils.isValidEnum(HeadAPI.Category.class, args[1].replace("-", "_").toUpperCase())) {
+                new BrowseGUI(player, HeadAPI.Category.valueOf(args[1].replace("-", "_").toUpperCase()));
+            }
+            else if (args.length <= 2 && args[0].equals("search")){
                 String search = String.join(" ",Arrays.copyOfRange(args, 1, args.length));
                 new BrowseGUI(player, search);
             }
-            else new BrowseGUI(player, HeadAPI.Category.valueOf(args[0].replace("-", "_").toUpperCase()));
         }
         return super.onCommand(sender, command, label, args);
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (command.getName().equals("krazyheads")){
-            if (args.length == 1) {
-                List<String> suggestions = new ArrayList<>();
+        List<String> suggestions = new ArrayList<>();
+        if (args.length == 1) suggestions = suggestByInput(args[0], Arrays.asList("search","category","reload"));
+        else if (args.length == 2) {
+            if (args[0].equals("category")){
                 for (HeadAPI.Category cat : HeadAPI.Category.values())
                     suggestions.add(WordUtils.capitalize(cat.toString().replace("_", "-").toLowerCase()));
-                return suggestByInput(args[0], suggestions);
+                return suggestByInput(args[1], suggestions);
             }
-            else return new ArrayList<>();
         }
-        return super.onTabComplete(sender, command, alias, args);
+        return suggestions;
     }
 
     @Override public void onDisable() {

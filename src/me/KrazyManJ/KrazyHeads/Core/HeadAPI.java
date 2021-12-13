@@ -39,6 +39,9 @@ public class HeadAPI {
         }
         return result;
     }
+    public static int getHeadsCount(){
+        return data.size();
+    }
     public static ItemStack randomItemFromCategory(Category cat){
         List<ItemStack> coll = (List<ItemStack>) data.get(cat);
         return coll.get((int) (Math.random() * coll.size()));
