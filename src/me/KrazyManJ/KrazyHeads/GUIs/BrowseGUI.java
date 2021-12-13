@@ -1,13 +1,12 @@
 package me.KrazyManJ.KrazyHeads.GUIs;
 
-import me.KrazyManJ.KrazyHeads.HeadAPI;
+import me.KrazyManJ.KrazyHeads.Core.HeadAPI;
 import me.KrazyManJ.KrazyHeads.ItemUtils;
 import me.KrazyManJ.KrazyHeads.Main;
-import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -16,8 +15,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -29,7 +26,7 @@ public class BrowseGUI implements Listener {
     private final List<ItemStack> heads;
 
     public BrowseGUI(Player player, HeadAPI.Category cat){
-        this.inv = Bukkit.createInventory(null, 54,"KrazyHeads - "+cat.getId());
+        this.inv = Bukkit.createInventory(null, 54,"KrazyHeads - "+ WordUtils.capitalize(cat.getId()));
         this.heads = HeadAPI.getCategoryHeads(cat);
         createGUI(player);
     }
@@ -75,7 +72,10 @@ public class BrowseGUI implements Listener {
             ItemStack clicked = event.getCurrentItem();
             Player player = (Player) event.getWhoClicked();
 
-            if (clicked.getType().equals(Material.PLAYER_HEAD)) player.getInventory().addItem(clicked);
+            if (clicked.getType().equals(Material.PLAYER_HEAD)) {
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 1);
+                player.getInventory().addItem(clicked);
+            }
             else if (clicked.equals(closeItem())){
                 new SelectorGUI(player);
             }
@@ -103,15 +103,15 @@ public class BrowseGUI implements Listener {
 
 
     private ItemStack closeItem(){
-        return ItemUtils.createItem(Material.BARRIER, "&x&f&f&0&0&0&0&lClose");
+        return ItemUtils.createItem(new ItemStack(Material.BARRIER), "&x&f&f&0&0&0&0&lClose");
     }
 
     private ItemStack nextPageItem(){
-        return ItemUtils.createItem(Material.ARROW, "&7Next page");
+        return ItemUtils.createItem(new ItemStack(Material.ARROW), "&7Next page");
     }
 
     private ItemStack previousPageItem(){
-        return ItemUtils.createItem(Material.ARROW, "&7Previous page");
+        return ItemUtils.createItem(new ItemStack(Material.ARROW), "&7Previous page");
     }
 
 

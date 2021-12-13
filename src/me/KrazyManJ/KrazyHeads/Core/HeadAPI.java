@@ -1,19 +1,18 @@
-package me.KrazyManJ.KrazyHeads;
+package me.KrazyManJ.KrazyHeads.Core;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.collect.Multimaps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.KrazyManJ.KrazyHeads.Main;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
@@ -39,6 +38,10 @@ public class HeadAPI {
             }
         }
         return result;
+    }
+    public static ItemStack randomItemFromCategory(Category cat){
+        List<ItemStack> coll = (List<ItemStack>) data.get(cat);
+        return coll.get((int) (Math.random() * coll.size()));
     }
 
     public static JsonArray fetchAPI(Category category) {
@@ -98,7 +101,7 @@ public class HeadAPI {
         HUMANS("humans"),
         HUMANOID("humanoid"),
         MISCELLANEOUS("miscellaneous"),
-        MOSTERS("monsters"),
+        MONSTERS("monsters"),
         PLANTS("plants");
 
         private Category(String id) {
@@ -107,6 +110,7 @@ public class HeadAPI {
         public String getId() {
             return id;
         }
+        public String fromId() { return id.toUpperCase().replace("-", "_");}
         private final String id;
     }
 }
