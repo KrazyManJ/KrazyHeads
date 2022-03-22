@@ -1,6 +1,7 @@
 package me.KrazyManJ.KrazyHeads.GUIs;
 
 import me.KrazyManJ.KrazyHeads.Core.HeadAPI;
+import me.KrazyManJ.KrazyHeads.Core.HeadCategory;
 import me.KrazyManJ.KrazyHeads.ItemUtils;
 import me.KrazyManJ.KrazyHeads.Main;
 import org.apache.commons.lang.WordUtils;
@@ -27,7 +28,7 @@ public class BrowseGUI implements Listener {
     private int maxPage;
     private final List<ItemStack> heads;
 
-    public BrowseGUI(Player player, HeadAPI.Category cat){
+    public BrowseGUI(Player player, HeadCategory cat){
         this.inv = Bukkit.createInventory(null, 54,"KrazyHeads - "+ WordUtils.capitalize(cat.getId()));
         this.heads = HeadAPI.getCategoryHeads(cat);
         createGUI(player);

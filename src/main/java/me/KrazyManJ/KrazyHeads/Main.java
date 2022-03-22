@@ -1,6 +1,7 @@
 package me.KrazyManJ.KrazyHeads;
 
 import me.KrazyManJ.KrazyHeads.Core.HeadAPI;
+import me.KrazyManJ.KrazyHeads.Core.HeadCategory;
 import me.KrazyManJ.KrazyHeads.GUIs.BrowseGUI;
 import me.KrazyManJ.KrazyHeads.GUIs.SelectorGUI;
 import org.apache.commons.lang.StringUtils;
@@ -39,8 +40,8 @@ public class Main extends JavaPlugin {
                 HeadAPI.initializeHeads();
                 player.sendMessage("Heads successfully reloaded!");
             }
-            else if (args.length == 2 && args[0].equals("category") && EnumUtils.isValidEnum(HeadAPI.Category.class, args[1].replace("-", "_").toUpperCase())) {
-                new BrowseGUI(player, HeadAPI.Category.valueOf(args[1].replace("-", "_").toUpperCase()));
+            else if (args.length == 2 && args[0].equals("category") && EnumUtils.isValidEnum(HeadCategory.class, args[1].replace("-", "_").toUpperCase())) {
+                new BrowseGUI(player, HeadCategory.valueOf(args[1].replace("-", "_").toUpperCase()));
             }
             else if (args.length <= 2 && args[0].equals("search")){
                 String search = String.join(" ",Arrays.copyOfRange(args, 1, args.length));
@@ -56,7 +57,7 @@ public class Main extends JavaPlugin {
         if (args.length == 1) suggestions = suggestByInput(args[0], Arrays.asList("search","category","reload"));
         else if (args.length == 2) {
             if (args[0].equals("category")){
-                for (HeadAPI.Category cat : HeadAPI.Category.values())
+                for (HeadCategory cat : HeadCategory.values())
                     suggestions.add(WordUtils.capitalize(cat.toString().replace("_", "-").toLowerCase()));
                 return suggestByInput(args[1], suggestions);
             }

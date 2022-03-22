@@ -27,14 +27,14 @@ import java.util.logging.Level;
 
 public class HeadAPI {
     @SuppressWarnings("UnstableApiUsage")
-    private static final Multimap<Category, ItemStack> data = MultimapBuilder.hashKeys().arrayListValues().build();
+    private static final Multimap<HeadCategory, ItemStack> data = MultimapBuilder.hashKeys().arrayListValues().build();
 
-    public static List<ItemStack> getCategoryHeads(Category cat){
+    public static List<ItemStack> getCategoryHeads(HeadCategory cat){
         return (List<ItemStack>) data.get(cat);
     }
     public static List<ItemStack> getHeadsBySearch(String input){
         List<ItemStack> result = new ArrayList<>();
-        for (Category cat : Category.values()){
+        for (HeadCategory cat : HeadCategory.values()){
             for (ItemStack item : data.get(cat)){
                 if (StringUtils.containsIgnoreCase(Objects.requireNonNull(item.getItemMeta()).getDisplayName(), input)) result.add(item);
             }
@@ -44,12 +44,12 @@ public class HeadAPI {
     public static int getHeadsCount(){
         return data.size();
     }
-    public static ItemStack randomItemFromCategory(Category cat){
+    public static ItemStack randomItemFromCategory(HeadCategory cat){
         List<ItemStack> coll = (List<ItemStack>) data.get(cat);
         return coll.get((int) (Math.random() * coll.size()));
     }
 
-    public static JsonArray fetchAPI(Category category) {
+    public static JsonArray fetchAPI(HeadCategory category) {
         try {
             URL url = new URL("https://minecraft-heads.com/scripts/api.php?cat=" + category.getId());
             URLConnection request = url.openConnection();
@@ -64,7 +64,7 @@ public class HeadAPI {
         }
     }
     public static void initializeHeads(){
-        for (Category cat : Category.values()){
+        for (HeadCategory cat : HeadCategory.values()){
             new BukkitRunnable() {
                 @Override public void run() {
                     for (JsonElement elem : fetchAPI(cat)){
@@ -87,7 +87,6 @@ public class HeadAPI {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static ItemStack customPlayerHead(String value, String uuid) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         String[] splits = uuid.split("(?=-)", 4);
@@ -95,28 +94,5 @@ public class HeadAPI {
         return Bukkit.getUnsafe().modifyItemStack(skull,
                 "{Id:"+uuid+",SkullOwner:{Id:[I;" + String.join(",",splits) + "],Properties:{textures:[{Value:\"" + value + "\"}]}}}"
         );
-    }
-
-
-    public enum Category{
-        ALPHABET("alphabet"),
-        ANIMALS("animals"),
-        BLOCKS("blocks"),
-        DECORATION("decoration"),
-        FOOD_DRINKS("food-drinks"),
-        HUMANS("humans"),
-        HUMANOID("humanoid"),
-        MISCELLANEOUS("miscellaneous"),
-        MONSTERS("monsters"),
-        PLANTS("plants");
-
-        Category(String id) {
-            this.id = id;
-        }
-        public String getId() {
-            return id;
-        }
-        public String fromId() { return id.toUpperCase().replace("-", "_");}
-        private final String id;
     }
 }

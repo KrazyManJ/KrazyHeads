@@ -1,6 +1,8 @@
 package me.KrazyManJ.KrazyHeads.GUIs;
 
+import com.google.common.base.Charsets;
 import me.KrazyManJ.KrazyHeads.Core.HeadAPI;
+import me.KrazyManJ.KrazyHeads.Core.HeadCategory;
 import me.KrazyManJ.KrazyHeads.ItemUtils;
 import me.KrazyManJ.KrazyHeads.Main;
 import org.apache.commons.lang.WordUtils;
@@ -22,6 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SelectorGUI implements Listener {
     private Inventory inv;
@@ -35,7 +38,7 @@ public class SelectorGUI implements Listener {
             @Override
             public void run() {
                 int slot = 0;
-                for (HeadAPI.Category cat : HeadAPI.Category.values()){
+                for (HeadCategory cat : HeadCategory.values()){
                     inv.setItem(slots[slot], ItemUtils.createItem(HeadAPI.randomItemFromCategory(cat),"&f"+WordUtils.capitalize(cat.getId())));
                     slot++;
                 }
@@ -57,7 +60,7 @@ public class SelectorGUI implements Listener {
                 ItemMeta meta = item.getItemMeta();
                 HandlerList.unregisterAll(this);
                 assert meta != null;
-                new BrowseGUI(player, HeadAPI.Category.valueOf(ChatColor.stripColor(meta.getDisplayName()).replace("-", "_").toUpperCase()));
+                new BrowseGUI(player, HeadCategory.valueOf(ChatColor.stripColor(meta.getDisplayName()).replace("-", "_").toUpperCase()));
             }
             event.setCancelled(true);
         }
@@ -72,17 +75,16 @@ public class SelectorGUI implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private ItemStack statusItem(){
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         assert meta != null;
-        meta.setOwningPlayer(Bukkit.getOfflinePlayer("KrazyManJ"));
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.nameUUIDFromBytes("OfflinePLayer:KrazyManJ".getBytes(Charsets.UTF_8))));
         meta.setDisplayName(ItemUtils.colorize("         &e&lStatus:"));
         List<String> string = new ArrayList<>();
         string.add(ItemUtils.colorize("&r"));
         string.add(ItemUtils.colorize("  &7Total heads: &e"+HeadAPI.getHeadsCount()+"&r &r "));
-        string.add(ItemUtils.colorize("  &7Total categories: &e"+HeadAPI.Category.values().length+"&r &r "));
+        string.add(ItemUtils.colorize("  &7Total categories: &e"+HeadCategory.values().length+"&r &r "));
         string.add(ItemUtils.colorize("&r"));
         meta.setLore(string);
         item.setItemMeta(meta);
