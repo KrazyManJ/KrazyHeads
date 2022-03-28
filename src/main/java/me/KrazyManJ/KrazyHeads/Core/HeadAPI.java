@@ -1,7 +1,5 @@
 package me.KrazyManJ.KrazyHeads.Core;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,17 +18,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 public class HeadAPI {
-    @SuppressWarnings("UnstableApiUsage")
-    private static final Multimap<HeadCategory, ItemStack> data = MultimapBuilder.hashKeys().arrayListValues().build();
+    private static final HashMap<HeadCategory, List<ItemStack>> data = new HashMap<>();
 
     public static List<ItemStack> getCategoryHeads(HeadCategory cat){
-        return (List<ItemStack>) data.get(cat);
+        return data.get(cat);
     }
     public static List<ItemStack> getHeadsBySearch(String input){
         List<ItemStack> result = new ArrayList<>();
@@ -45,13 +40,13 @@ public class HeadAPI {
         return data.size();
     }
     public static ItemStack randomItemFromCategory(HeadCategory cat){
-        List<ItemStack> coll = (List<ItemStack>) data.get(cat);
+        List<ItemStack> coll = data.get(cat);
         return coll.get((int) (Math.random() * coll.size()));
     }
 
     public static JsonArray fetchAPI(HeadCategory category) {
         try {
-            URL url = new URL("https://minecraft-heads.com/scripts/api.php?cat=" + category.getId());
+            URL url = new URL("https://minecraft-heads.com/scripts/api.php?cat=" + category.getId()+"&tags=true");
             URLConnection request = url.openConnection();
             request.connect();
             JsonParser jp = new JsonParser();
@@ -67,6 +62,7 @@ public class HeadAPI {
         for (HeadCategory cat : HeadCategory.values()){
             new BukkitRunnable() {
                 @Override public void run() {
+                    List<ItemStack> s = new LinkedList<>();
                     for (JsonElement elem : fetchAPI(cat)){
                         JsonObject obj = (JsonObject) elem;
                         String value = obj.get("value").getAsString();
@@ -79,8 +75,9 @@ public class HeadAPI {
                         meta.setDisplayName(ChatColor.RESET + name);
                         head.setItemMeta(meta);
 
-                        data.put(cat, head);
+                        s.add(head);
                     }
+                    data.put(cat, s);
                 }
             }.runTaskAsynchronously(Main.getInstance());
             Main.log(Level.INFO, "&aSuccessfully loaded category &x&8&0&e&b&3&4\""+cat.getId()+"\"&a!");

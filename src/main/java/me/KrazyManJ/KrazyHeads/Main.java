@@ -11,14 +11,17 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.EnumUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements Listener {
     private static Main instance;
 
     public static Main getInstance() { return instance; }
@@ -33,9 +36,7 @@ public class Main extends JavaPlugin {
     @Override
     public boolean onCommand(@Nonnull CommandSender sender,@Nonnull Command command,@Nonnull String label,@Nonnull String[] args) {
         if (sender instanceof Player player){
-            if (args.length == 0){
-                new SelectorGUI(player);
-            }
+            if (args.length == 0) new SelectorGUI(player);
             else if (args.length == 1 && args[0].equals("reload") && player.hasPermission("krazyheads.admin")){
                 HeadAPI.initializeHeads();
                 player.sendMessage("Heads successfully reloaded!");
